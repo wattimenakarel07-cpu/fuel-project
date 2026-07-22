@@ -35,6 +35,8 @@ async function getKaryawan(id) {
     try {
         const docRef = db.collection("karyawan").doc(cleanId);
         const doc = await docRef.get();
+alert("Doc Exists = " + doc.exists);
+alert(error.message);
 
         console.log("2. Doc Exists:", doc.exists);
 
