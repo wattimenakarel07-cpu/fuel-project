@@ -42,9 +42,14 @@ async function getKaryawan(id) {
 
     try {
 
-        const doc = await db.collection("karyawan").doc(cleanId).get();
+        const docRef = db.collection("karyawan").doc(cleanId);
 
-        alert("Doc Exists = " + doc.exists);
+alert(docRef.path);
+
+const doc = await docRef.get();
+
+alert("Doc Exists = " + doc.exists);
+alert(JSON.stringify(doc.metadata));
 
         if (doc.exists) {
             return doc.data();
