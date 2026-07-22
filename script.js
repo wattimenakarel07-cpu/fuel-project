@@ -212,9 +212,15 @@ console.log("ID yang dicari:", id);
           if (!file) return;
 
           // ===== 2. STOP SCANNER DULU =====
-          if (html5QrCode && html5QrCode.isScanning) {
-              await html5QrCode.stop();
-          }
+          if (html5QrCode) {
+    try {
+        await html5QrCode.stop();
+    } catch (e) {}
+    try {
+        await html5QrCode.clear();
+    } catch (e) {}
+    html5QrCode = null;
+}
 
           try {
               if (!html5QrCode) {
