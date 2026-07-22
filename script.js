@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     stopScanner();
 
     const id = decodedText.trim();
+alert("QR = " + id);
 console.log("Isi QR:", id);
 
     const dataUser = await getKaryawan(id);
