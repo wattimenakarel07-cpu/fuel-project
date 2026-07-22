@@ -63,6 +63,7 @@ alert("QR = " + id);
 console.log("Isi QR:", id);
 
     const dataUser = await getKaryawan(id);
+alert(JSON.stringify(dataUser));
 
     const resultDiv = document.getElementById("scanResult");
     const userCard = document.getElementById("userInfoCard");
