@@ -262,5 +262,33 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('online', () => {
       sinkronkanRiwayat();
   });
+const btnTest = document.getElementById("btnTestFirebase");
+
+if (btnTest) {
+    btnTest.addEventListener("click", async () => {
+
+        const id = "2409059";
+
+        const data = await getKaryawan(id);
+
+        if (!data) {
+            alert("Data tidak ditemukan!");
+            return;
+        }
+
+        document.getElementById("infoNama").innerText = data.nama || "-";
+        document.getElementById("infoID").innerText = id;
+        document.getElementById("infoDepartemen").innerText = data.departemen || "-";
+        document.getElementById("infoStatus").innerText = data.status || "-";
+
+        if (data.foto) {
+            document.getElementById("userPhoto").src = data.foto;
+        }
+
+        document.getElementById("userInfoCard").hidden = false;
+
+        alert("Berhasil mengambil data dari Firebase!");
+    });
+}
 
 }); // penutup DOMContentLoaded
