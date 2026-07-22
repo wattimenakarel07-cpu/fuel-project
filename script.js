@@ -70,9 +70,28 @@ console.log("Isi QR:", id);
 
         dataScanSaatIni = dataUser;
 
-        resultDiv.innerHTML =
-            "<p style='color:lime;font-weight:bold'>SCAN BERHASIL</p>";
+        resultDiv.innerHTML = `
+<div style="
+background:#0f172a;
+padding:15px;
+border-radius:12px;
+border:1px solid #22c55e;
+">
 
+<h3 style="color:#22c55e;margin-bottom:10px;">
+✅ Data ditemukan
+</h3>
+
+<p><b>Nama :</b> ${dataUser.nama}</p>
+
+<p><b>ID :</b> ${id}</p>
+
+<p><b>Departemen :</b> ${dataUser.departemen}</p>
+
+<p><b>Status :</b> ${dataUser.status}</p>
+
+</div>
+`;
         userCard.hidden = false;
 
         document.getElementById("infoNama").innerText = dataUser.nama;
