@@ -109,13 +109,22 @@ db.collection("karyawan")
   .doc("hfnc-kwp-2409059")
   .get()
   .then((doc) => {
+
+    alert("Firebase jalan");
+
     if (doc.exists) {
-      console.log("Firebase Terhubung");
-      console.log(doc.data());
+
+      alert("Nama : " + doc.data().nama);
+
     } else {
-      console.log("Data tidak ditemukan");
+
+      alert("Data tidak ditemukan");
+
     }
+
   })
   .catch((error) => {
-    console.error("Error Firebase:", error);
+
+    alert(error.message);
+
   });
