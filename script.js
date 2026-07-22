@@ -65,7 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const userCard = document.getElementById("userInfoCard");
 
     if (dataUser) {
-        dataScanSaatIni = dataUser;
+        dataScanSaatIni = {
+    id: id,
+    ...dataUser
+};
 
         if(resultDiv) resultDiv.innerHTML = `
         <div style="background:#0f172a;padding:15px;border-radius:12px;border:1px solid #22c55e;">
