@@ -27,9 +27,6 @@ console.log("=================================");
 // ======================================================
 // FUNGSI AMBIL DATA KARYAWAN - VERSI DEBUG
 // ======================================================
-async function getKaryawan(id) {
-    try {
-
         const snapshot = await db.collection("karyawan").get();
 
         alert("Jumlah dokumen: " + snapshot.size);
