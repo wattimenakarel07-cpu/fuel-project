@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     stopScanner();
 
-    const id = decodedText.trim();
+    alert(decodedText);
 alert("QR = " + id);
 console.log("Isi QR:", id);
 
