@@ -25,52 +25,30 @@ console.log("Project :", firebase.app().options.projectId);
 console.log("=================================");
 
 // ======================================================
-// FUNGSI AMBIL DATA KARYAWAN - VERSI DEBUG
+// FUNGSI AMBIL DATA KARYAWAN
 // ======================================================
-        const snapshot = await db.collection("karyawan").get();
+async function getKaryawan(id) {
 
-        alert("Jumlah dokumen: " + snapshot.size);
+    const cleanId = id.trim();
 
-        snapshot.forEach(doc => {
-            alert("ID: " + doc.id);
-        });
+    try {
+
+        const doc = await db.collection("karyawan").doc(cleanId).get();
+
+        alert("Doc Exists = " + doc.exists);
+
+        if (doc.exists) {
+            return doc.data();
+        }
 
         return null;
 
     } catch (error) {
-        alert(error.message);
+        alert("Error Firebase: " + error.message);
         console.error(error);
         return null;
     }
 }
-
-    try {
-        const docRef = db.collection("karyawan").doc(cleanId);
-        const doc = await docRef.get();
-alert("Doc Exists = " + doc.exists);
-alert(error.message);
-
-        console.log("2. Doc Exists:", doc.exists);
-
-        if(doc.exists){
-            console.log("3. DATA KETEMU:", doc.data());
-            return doc.data();
-        }else{
-            // Ini penting: kasih tau semua ID yg ada di Firebase
-            console.warn("3. DATA TIDAK ADA untuk ID:", cleanId);
-            console.log("Cek semua data di collection 'karyawan'...");
-            const snapshot = await db.collection("karyawan").get();
-            snapshot.forEach(d => console.log("ID di Firebase:", d.id));
-            return null;
-        }
-
-    }catch(error){
-        console.error("ERROR FIREBASE:", error);
-        alert("Error koneksi Firebase: " + error.message);
-        return null;
-    }
-}
-
 // ======================================================
 // FUNGSI TAMBAH KARYAWAN
 // ======================================================
