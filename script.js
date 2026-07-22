@@ -127,6 +127,35 @@ document.addEventListener('DOMContentLoaded', function() {
       </tr>
     `;
     tbody.insertAdjacentHTML('afterbegin', row);
-  }
+}
+// ===========================
+// PILIH QR DARI GALERI
+// ===========================
+
+const galleryBtn = document.getElementById("galleryBtn");
+const galleryInput = document.getElementById("galleryInput");
+
+// Cek dulu ada apa enggak
+if(galleryBtn) {
+    galleryBtn.addEventListener("click", () => {
+        galleryInput.click();
+    });
+
+    galleryInput.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("qrReader");
+            }
+            const decodedText = await html5QrCode.scanFile(file, true);
+            onScanSuccess(decodedText);
+        } catch (err) {
+            document.getElementById("scanResult").innerHTML =
+            "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
+        }
+    });
+}
 
 });
