@@ -234,9 +234,16 @@ alert(decodedText);
 
 onScanSuccess(decodedText);
           } catch (err) {
-              const scanResult = document.getElementById("scanResult");
-              if(scanResult) scanResult.innerHTML = "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
-          }
+    console.error("Scan Galeri Error:", err);
+
+    alert(err);
+
+    const scanResult = document.getElementById("scanResult");
+    if (scanResult) {
+        scanResult.innerHTML =
+            "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
+    }
+}
       });
   }
 
