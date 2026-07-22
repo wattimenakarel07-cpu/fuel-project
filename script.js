@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
     html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-   .catch(err => {
+  .catch(err => {
       const scanResult = document.getElementById('scanResult');
       if(scanResult) scanResult.innerHTML = `<p style="color:var(--danger)">Gagal buka kamera. Izinkan akses kamera dulu.</p>`;
     });
@@ -125,7 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
         jenisBBM: document.getElementById('jenisBBM').value,
         liter: document.getElementById('jumlahLiter').value,
         kendaraan: document.getElementById('nomorKendaraan').value,
-        operator: "Petugas"
+        operator: "Petugas",
+        sync: false // 1. TAMBAH INI
       };
 
       tambahKeRiwayat(aktivitas);
@@ -135,8 +136,17 @@ document.addEventListener('DOMContentLoaded', function() {
       riwayat.unshift(aktivitas);
       localStorage.setItem("riwayat", JSON.stringify(riwayat));
 
-      // ===== 9. SIMPAN KE FIREBASE JUGA =====
-      // await db.collection("riwayat").add(aktivitas); // Aktifkan kalau sudah online
+      // ===== 9. COBA SIMPAN KE FIREBASE JIKA ONLINE =====
+      if(navigator.onLine) {
+          const berhasil = await simpanKeFirebase(aktivitas);
+          if(berhasil) {
+              aktivitas.sync = true;
+              // 2. UPDATE LOCALSTORAGE BIAR GAK KE-SYNC 2X
+              const index = riwayat.findIndex(item => item.tanggal === aktivitas.tanggal && item.id === aktivitas.id);
+              if(index!== -1) riwayat[index].sync = true;
+              localStorage.setItem("riwayat", JSON.stringify(riwayat));
+          }
+      }
 
       alert(`Data ${aktivitas.nama} berhasil disimpan!`);
       form.reset();
@@ -213,39 +223,41 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       });
   }
-// ===== 10. FUNGSI SIMPAN KE FIREBASE =====
-async function simpanKeFirebase(data) {
-    try {
-        await db.collection("riwayat").add(data);
-        console.log("Tersimpan ke Firebase:", data.nama);
-        return true;
-    } catch(error) {
-        console.error("Gagal ke Firebase:", error);
-        return false;
-    }
-}
 
-// ===== 11. FUNGSI SINKRONISASI OTOMATIS =====
-async function sinkronkanRiwayat() {
-    let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
-    if(riwayat.length === 0) return;
+  // ===== 10. FUNGSI SIMPAN KE FIREBASE =====
+  async function simpanKeFirebase(data) {
+      try {
+          await db.collection("riwayat").add(data);
+          console.log("Tersimpan ke Firebase:", data.nama);
+          return true;
+      } catch(error) {
+          console.error("Gagal ke Firebase:", error);
+          return false;
+      }
+  }
 
-    const riwayatBelumSync = riwayat.filter(item =>!item.sync);
+  // ===== 11. FUNGSI SINKRONISASI OTOMATIS =====
+  async function sinkronkanRiwayat() {
+      let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+      if(riwayat.length === 0) return;
 
-    if(riwayatBelumSync.length > 0) {
-        for(let i = 0; i < riwayatBelumSync.length; i++) {
-            const berhasil = await simpanKeFirebase(riwayatBelumSync[i]);
-            if(berhasil) {
-                riwayatBelumSync[i].sync = true;
-            }
-        }
-        localStorage.setItem("riwayat", JSON.stringify(riwayat));
-        alert(`${riwayatBelumSync.length} data berhasil disinkronkan`);
-    }
-}
+      const riwayatBelumSync = riwayat.filter(item =>!item.sync);
 
-// Auto sync saat online
-window.addEventListener('online', () => {
-    sinkronkanRiwayat();
-});
+      if(riwayatBelumSync.length > 0) {
+          for(let i = 0; i < riwayatBelumSync.length; i++) {
+              const berhasil = await simpanKeFirebase(riwayatBelumSync[i]);
+              if(berhasil) {
+                  riwayatBelumSync[i].sync = true;
+              }
+          }
+          localStorage.setItem("riwayat", JSON.stringify(riwayat));
+          alert(`${riwayatBelumSync.length} data berhasil disinkronkan`);
+      }
+  }
+
+  // Auto sync saat online
+  window.addEventListener('online', () => {
+      sinkronkanRiwayat();
+  });
+
 }); // penutup DOMContentLoaded
