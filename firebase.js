@@ -18,11 +18,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 alert("firebase.js berhasil dimuat");
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-alert("firebase.js berhasil dimuat");
 alert(firebase.app().options.projectId);
 
 
