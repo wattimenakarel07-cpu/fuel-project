@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===== 3. SAAT QR BERHASIL DI SCAN =====
   async function onScanSuccess(decodedText) {
-    stopScanner();
+    // stopScanner();
     const id = decodedText.trim();
 console.log("QR Asli:", decodedText);
 console.log("ID yang dicari:", id);
