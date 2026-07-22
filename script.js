@@ -62,6 +62,7 @@ console.log("QR Asli:", decodedText);
 console.log("ID yang dicari:", id);
 
     const dataUser = await getKaryawan(id);
+alert("Masuk ke onScanSuccess");
 
     const resultDiv = document.getElementById("scanResult");
     const userCard = document.getElementById("userInfoCard");
