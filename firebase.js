@@ -17,6 +17,7 @@ const firebaseConfig = {
 // ======================================================
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+alert("firebase.js berhasil dimuat");
 
 console.log("=================================");
 console.log("Firebase berhasil diinisialisasi");
