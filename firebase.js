@@ -28,9 +28,24 @@ console.log("=================================");
 // FUNGSI AMBIL DATA KARYAWAN - VERSI DEBUG
 // ======================================================
 async function getKaryawan(id) {
-    // 1. Bersihkan ID dari spasi
-    const cleanId = id.trim(); 
-    console.log("1. Mencari ID:", cleanId);
+    try {
+
+        const snapshot = await db.collection("karyawan").get();
+
+        alert("Jumlah dokumen: " + snapshot.size);
+
+        snapshot.forEach(doc => {
+            alert("ID: " + doc.id);
+        });
+
+        return null;
+
+    } catch (error) {
+        alert(error.message);
+        console.error(error);
+        return null;
+    }
+}
 
     try {
         const docRef = db.collection("karyawan").doc(cleanId);
