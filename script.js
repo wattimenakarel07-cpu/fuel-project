@@ -226,8 +226,13 @@ console.log("ID yang dicari:", id);
               if (!html5QrCode) {
                   html5QrCode = new Html5Qrcode("qrReader");
               }
-              const decodedText = await html5QrCode.scanFile(file, true);
-              onScanSuccess(decodedText);
+              alert("Gambar dipilih");
+
+const decodedText = await html5QrCode.scanFile(file, true);
+
+alert(decodedText);
+
+onScanSuccess(decodedText);
           } catch (err) {
               const scanResult = document.getElementById("scanResult");
               if(scanResult) scanResult.innerHTML = "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
