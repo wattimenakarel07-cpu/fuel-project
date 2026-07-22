@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     stopScanner();
 
     const id = decodedText.trim();
+console.log("Isi QR:", id);
 
     const dataUser = await getKaryawan(id);
 
@@ -159,6 +160,9 @@ if(galleryBtn) {
                 html5QrCode = new Html5Qrcode("qrReader");
             }
             const decodedText = await html5QrCode.scanFile(file, true);
+
+console.log("QR berhasil dibaca:", decodedText);
+
             onScanSuccess(decodedText);
         } catch (err) {
             document.getElementById("scanResult").innerHTML =
