@@ -54,36 +54,45 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ===== 3. SAAT QR BERHASIL DI SCAN =====
-  function onScanSuccess(decodedText, decodedResult) {
+ async function onScanSuccess(decodedText) {
+
     stopScanner();
-    
-    const dataUser = databaseKaryawan[decodedText];
-    const resultDiv = document.getElementById('scanResult');
-    const userCard = document.getElementById('userInfoCard');
 
-    if(dataUser) {
-      dataScanSaatIni = dataUser;
-      resultDiv.innerHTML = `<p style="color:var(--success); font-weight:700">SCAN BERHASIL</p>`;
-      
-      userCard.hidden = false;
-      document.getElementById('userPhoto').src = dataUser.foto;
-      document.getElementById('infoNama').innerText = dataUser.nama;
-      document.getElementById('infoID').innerText = dataUser.id;
-      document.getElementById('infoDepartemen').innerText = dataUser.departemen;
-      document.getElementById('infoStatus').innerText = dataUser.status;
+    const id = decodedText.trim();
 
-      if(dataUser.status.includes("DIJINKAN")) {
-        document.getElementById('infoStatus').style.background = "var(--success)";
-      } else {
-        document.getElementById('infoStatus').style.background = "var(--danger)";
-      }
+    const dataUser = await getKaryawan(id);
+
+    const resultDiv = document.getElementById("scanResult");
+    const userCard = document.getElementById("userInfoCard");
+
+    if (dataUser) {
+
+        dataScanSaatIni = dataUser;
+
+        resultDiv.innerHTML =
+            "<p style='color:lime;font-weight:bold'>SCAN BERHASIL</p>";
+
+        userCard.hidden = false;
+
+        document.getElementById("infoNama").innerText = dataUser.nama;
+        document.getElementById("infoID").innerText = id;
+        document.getElementById("infoDepartemen").innerText = dataUser.departemen;
+        document.getElementById("infoStatus").innerText = dataUser.status;
+
+        if (dataUser.foto) {
+            document.getElementById("userPhoto").src = dataUser.foto;
+        }
 
     } else {
-      resultDiv.innerHTML = `<p style="color:var(--danger); font-weight:700">ID TIDAK TERDAFTAR</p>`;
-      userCard.hidden = true;
+
+        resultDiv.innerHTML =
+            "<p style='color:red;font-weight:bold'>DATA TIDAK DITEMUKAN</p>";
+
+        userCard.hidden = true;
     }
+
     setTimeout(startScanner, 3000);
-  }
+}
 
   // ===== 4. LOGIKA SIMPAN FORM =====
   const form = document.getElementById('formAktivitas');
