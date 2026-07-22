@@ -29,20 +29,38 @@ const db = firebase.firestore();
 // ======================================================
 
 async function getKaryawan(id) {
-  try {
-    const doc = await db.collection("karyawan").doc(id).get();
 
-    if (doc.exists) {
-      return doc.data();
-    } else {
-      return null;
+    console.log("Mencari:", id);
+
+    try {
+
+        const doc = await db.collection("karyawan").doc(id).get();
+
+        console.log("Doc Exists:", doc.exists);
+
+        if(doc.exists){
+
+            console.log(doc.data());
+
+            return doc.data();
+
+        }else{
+
+            console.log("DATA TIDAK ADA");
+
+            return null;
+
+        }
+
+    }catch(error){
+
+        console.error("ERROR FIREBASE:", error);
+
+        return null;
+
     }
-  } catch (error) {
-    console.error("Gagal mengambil data:", error);
-    return null;
-  }
-}
 
+}
 // ======================================================
 // FUNGSI TAMBAH KARYAWAN
 // ======================================================
