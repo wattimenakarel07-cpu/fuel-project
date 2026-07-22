@@ -18,6 +18,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+console.log("=================================");
+console.log("Firebase berhasil diinisialisasi");
+console.log("Project :", firebase.app().options.projectId);
+console.log("=================================");
+
 // ======================================================
 // FUNGSI AMBIL DATA KARYAWAN - VERSI DEBUG
 // ======================================================
