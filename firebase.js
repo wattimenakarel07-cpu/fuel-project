@@ -18,7 +18,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 alert("firebase.js berhasil dimuat");
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+alert("firebase.js berhasil dimuat");
 alert(firebase.app().options.projectId);
+
+
+// ===== BATAS AKHIR =====
+
+console.log("=================================");
+console.log("Firebase berhasil diinisialisasi");
+console.log("Project :", firebase.app().options.projectId);
+console.log("=================================");
 
 console.log("=================================");
 console.log("Firebase berhasil diinisialisasi");
