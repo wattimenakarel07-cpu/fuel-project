@@ -232,7 +232,7 @@ const decodedText = await html5QrCode.scanFile(file, true);
 
 alert(decodedText);
 
-onScanSuccess(decodedText);
+await onScanSuccess(decodedText);
           } catch (err) {
     console.error("Scan Galeri Error:", err);
 
