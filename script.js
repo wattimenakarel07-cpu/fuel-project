@@ -1,26 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  // ===== DATA DUMMY. NANTI GANTI KE FIREBASE =====
-  const databaseKaryawan = {
-    "EMP001": { nama: "BUDI SANTOSO", id: "EMP001", departemen: "OPERATOR", jabatan: "Staff", status: "DIJINKAN", foto: "https://placehold.co/80x80/22c55e/ffffff?text=B" },
-    "EMP002": { nama: "SITI AMINAH", id: "EMP002", departemen: "SUPERVISOR", jabatan: "SPV", status: "DIJINKAN", foto: "https://placehold.co/80x80/22c55e/ffffff?text=S" },
-    "EMP003": { nama: "JOKO WIDODO", id: "EMP003", departemen: "HELPER", jabatan: "Staff", status: "DITOLAK - KUOTA HABIS", foto: "https://placehold.co/80x80/ef4444/ffffff?text=J" }
-  }
-
+  // ===== DATA DIAMBIL DARI FIREBASE =====
   let dataScanSaatIni = null;
   let html5QrCode = null;
 
+  // ===== 0. LOAD RIWAYAT DARI LOCALSTORAGE SAAT BUKA APP =====
+  loadRiwayat();
+
   // ===== 1. LOGIKA GANTI TAB =====
-  document.querySelectorAll('.nav-link, .quick-action-btn').forEach(btn => {
+  document.querySelectorAll('.nav-link,.quick-action-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const target = btn.getAttribute('href')?.replace('#','') || btn.dataset.target;
-      
+
       document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-      
-      document.getElementById(target).classList.add('active');
-      document.querySelector(`.nav-link[href="#${target}"]`)?.classList.add('active');
+
+      const section = document.getElementById(target);
+      const navLink = document.querySelector(`.nav-link[href="#${target}"]`);
+      if(section) section.classList.add('active');
+      if(navLink) navLink.classList.add('active');
 
       if(target === 'scan') {
         startScanner();
@@ -32,15 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===== 2. FUNGSI SCANNER QR =====
   function startScanner() {
+    const qrReader = document.getElementById('qrReader');
+    if(!qrReader) return;
     if(html5QrCode) return;
-    if(!document.getElementById('qrReader')) return;
 
     html5QrCode = new Html5Qrcode("qrReader");
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
     html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-    .catch(err => {
-      document.getElementById('scanResult').innerHTML = `<p style="color:var(--danger)">Gagal buka kamera. Izinkan akses kamera dulu.</p>`;
+   .catch(err => {
+      const scanResult = document.getElementById('scanResult');
+      if(scanResult) scanResult.innerHTML = `<p style="color:var(--danger)">Gagal buka kamera. Izinkan akses kamera dulu.</p>`;
     });
   }
 
@@ -54,72 +55,62 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ===== 3. SAAT QR BERHASIL DI SCAN =====
- async function onScanSuccess(decodedText) {
-
+  async function onScanSuccess(decodedText) {
     stopScanner();
-const id = decodedText.trim();
-    alert(decodedText);
-alert("QR = " + id);
-console.log("Isi QR:", id);
+    const id = decodedText.trim();
 
     const dataUser = await getKaryawan(id);
-alert(JSON.stringify(dataUser));
 
     const resultDiv = document.getElementById("scanResult");
     const userCard = document.getElementById("userInfoCard");
 
     if (dataUser) {
-
         dataScanSaatIni = dataUser;
 
-        resultDiv.innerHTML = `
-<div style="
-background:#0f172a;
-padding:15px;
-border-radius:12px;
-border:1px solid #22c55e;
-">
+        if(resultDiv) resultDiv.innerHTML = `
+        <div style="background:#0f172a;padding:15px;border-radius:12px;border:1px solid #22c55e;">
+            <h3 style="color:#22c55e;margin-bottom:10px;">✅ Data ditemukan</h3>
+            <p><b>Nama :</b> ${dataUser.nama}</p>
+            <p><b>ID :</b> ${id}</p>
+            <p><b>Departemen :</b> ${dataUser.departemen}</p>
+            <p><b>Status :</b> ${dataUser.status}</p>
+        </div>`;
 
-<h3 style="color:#22c55e;margin-bottom:10px;">
-✅ Data ditemukan
-</h3>
+        if(userCard) userCard.hidden = false;
 
-<p><b>Nama :</b> ${dataUser.nama}</p>
+        const infoNama = document.getElementById("infoNama");
+        const infoID = document.getElementById("infoID");
+        const infoDepartemen = document.getElementById("infoDepartemen");
+        const infoStatus = document.getElementById("infoStatus");
+        const userPhoto = document.getElementById("userPhoto");
 
-<p><b>ID :</b> ${id}</p>
+        if(infoNama) infoNama.innerText = dataUser.nama;
+        if(infoID) infoID.innerText = id;
+        if(infoDepartemen) infoDepartemen.innerText = dataUser.departemen;
+        if(userPhoto && dataUser.foto) userPhoto.src = dataUser.foto;
 
-<p><b>Departemen :</b> ${dataUser.departemen}</p>
-
-<p><b>Status :</b> ${dataUser.status}</p>
-
-</div>
-`;
-        userCard.hidden = false;
-
-        document.getElementById("infoNama").innerText = dataUser.nama;
-        document.getElementById("infoID").innerText = id;
-        document.getElementById("infoDepartemen").innerText = dataUser.departemen;
-        document.getElementById("infoStatus").innerText = dataUser.status;
-
-        if (dataUser.foto) {
-            document.getElementById("userPhoto").src = dataUser.foto;
+        // ===== 4. WARNA STATUS =====
+        if(infoStatus){
+            infoStatus.innerText = dataUser.status;
+            if(dataUser.status === "DIJINKAN"){
+                infoStatus.style.background="#22c55e";
+            }else{
+                infoStatus.style.background="#ef4444";
+            }
         }
 
     } else {
-
-        resultDiv.innerHTML =
-            "<p style='color:red;font-weight:bold'>DATA TIDAK DITEMUKAN</p>";
-
-        userCard.hidden = true;
+        if(resultDiv) resultDiv.innerHTML = "<p style='color:red;font-weight:bold'>DATA TIDAK DITEMUKAN</p>";
+        if(userCard) userCard.hidden = true;
     }
 
     setTimeout(startScanner, 3000);
-}
+  }
 
   // ===== 4. LOGIKA SIMPAN FORM =====
   const form = document.getElementById('formAktivitas');
   if(form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       if(!dataScanSaatIni) {
@@ -138,9 +129,19 @@ border:1px solid #22c55e;
       };
 
       tambahKeRiwayat(aktivitas);
+
+      // ===== 5. SIMPAN KE LOCALSTORAGE =====
+      let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+      riwayat.unshift(aktivitas);
+      localStorage.setItem("riwayat", JSON.stringify(riwayat));
+
+      // ===== 9. SIMPAN KE FIREBASE JUGA =====
+      // await db.collection("riwayat").add(aktivitas); // Aktifkan kalau sudah online
+
       alert(`Data ${aktivitas.nama} berhasil disimpan!`);
       form.reset();
-      document.getElementById('userInfoCard').hidden = true;
+      const userCard = document.getElementById('userInfoCard');
+      if(userCard) userCard.hidden = true;
       dataScanSaatIni = null;
     });
   }
@@ -148,6 +149,7 @@ border:1px solid #22c55e;
   // ===== 5. FUNGSI TAMBAH KE TABEL RIWAYAT =====
   function tambahKeRiwayat(data) {
     const tbody = document.getElementById('riwayatTableBody');
+    if(!tbody) return;
     const row = `
       <tr>
         <td>${data.tanggal}</td>
@@ -158,38 +160,58 @@ border:1px solid #22c55e;
       </tr>
     `;
     tbody.insertAdjacentHTML('afterbegin', row);
-}
-// ===========================
-// PILIH QR DARI GALERI
-// ===========================
+  }
 
-const galleryBtn = document.getElementById("galleryBtn");
-const galleryInput = document.getElementById("galleryInput");
-
-// Cek dulu ada apa enggak
-if(galleryBtn) {
-    galleryBtn.addEventListener("click", () => {
-        galleryInput.click();
+  // ===== 6. LOAD RIWAYAT DARI LOCALSTORAGE =====
+  function loadRiwayat(){
+    const tbody = document.getElementById("riwayatTableBody");
+    if(!tbody) return;
+    tbody.innerHTML="";
+    const riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+    riwayat.forEach(data=>{
+        tbody.insertAdjacentHTML("beforeend",`
+        <tr>
+        <td>${data.tanggal}</td>
+        <td>${data.nama}</td>
+        <td>${data.jenisBBM}</td>
+        <td>${data.liter} L</td>
+        <td>${data.operator}</td>
+        </tr>
+        `);
     });
+  }
 
-    galleryInput.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+  // ===========================
+  // PILIH QR DARI GALERI
+  // ===========================
+  const galleryBtn = document.getElementById("galleryBtn");
+  const galleryInput = document.getElementById("galleryInput");
 
-        try {
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("qrReader");
-            }
-            const decodedText = await html5QrCode.scanFile(file, true);
+  if(galleryBtn && galleryInput) {
+      galleryBtn.addEventListener("click", () => {
+          galleryInput.click();
+      });
 
-console.log("QR berhasil dibaca:", decodedText);
+      galleryInput.addEventListener("change", async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
 
-            onScanSuccess(decodedText);
-        } catch (err) {
-            document.getElementById("scanResult").innerHTML =
-            "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
-        }
-    });
-}
+          // ===== 2. STOP SCANNER DULU =====
+          if (html5QrCode && html5QrCode.isScanning) {
+              await html5QrCode.stop();
+          }
 
-});
+          try {
+              if (!html5QrCode) {
+                  html5QrCode = new Html5Qrcode("qrReader");
+              }
+              const decodedText = await html5QrCode.scanFile(file, true);
+              onScanSuccess(decodedText);
+          } catch (err) {
+              const scanResult = document.getElementById("scanResult");
+              if(scanResult) scanResult.innerHTML = "<p style='color:red'>QR Code tidak ditemukan pada gambar.</p>";
+          }
+      });
+  }
+
+}); // penutup DOMContentLoaded
