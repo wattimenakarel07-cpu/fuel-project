@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
   async function onScanSuccess(decodedText) {
     stopScanner();
     const id = decodedText.trim();
+console.log("QR Asli:", decodedText);
+console.log("ID yang dicari:", id);
 
     const dataUser = await getKaryawan(id);
 

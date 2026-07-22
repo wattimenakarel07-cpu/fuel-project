@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A1120">
   <title>Fuel Management System</title>
-  
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,7 +18,7 @@
         <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FMS" alt="Logo Fuel Management System" class="app-logo">
         <h1 class="app-title">Fuel Management System</h1>
       </div>
-      
+
       <div class="header-right">
         <div class="connection-status" id="connectionStatus">
           <span class="status-indicator"></span>
@@ -51,7 +51,7 @@
       <!-- DASHBOARD -->
       <section id="dashboard" class="content-section active">
         <h2 class="section-title">Dashboard</h2>
-        
+
         <div class="stats-grid">
           <div class="stat-card">
             <p class="stat-card-title">Total Pengisian</p>
@@ -82,7 +82,7 @@
       <!-- SCAN QR -->
       <section id="scan" class="content-section">
         <h2 class="section-title">Scan QR</h2>
-        
+
         <div class="scanner-container">
           <div class="scanner-box">
             <div id="qrReader" class="qr-reader"></div>
@@ -119,7 +119,7 @@
 
         <form id="formAktivitas" class="activity-form">
           <h3 class="subsection-title">Form Aktivitas Pengisian</h3>
-          
+
           <div class="form-group">
             <label for="jenisBBM" class="form-label">Jenis BBM</label>
             <select id="jenisBBM" class="form-input" required>
@@ -129,17 +129,17 @@
               <option value="Solar">Solar</option>
             </select>
           </div>
-          
+
           <div class="form-group">
             <label for="jumlahLiter" class="form-label">Jumlah Liter</label>
             <input type="number" id="jumlahLiter" class="form-input" placeholder="Masukkan jumlah liter" required>
           </div>
-          
+
           <div class="form-group">
             <label for="nomorKendaraan" class="form-label">Nomor Kendaraan</label>
             <input type="text" id="nomorKendaraan" class="form-input" placeholder="Contoh: B 1234 CD" required>
           </div>
-          
+
           <button type="submit" class="btn-submit">Simpan Aktivitas</button>
         </form>
       </section>
