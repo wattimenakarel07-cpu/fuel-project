@@ -213,5 +213,39 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       });
   }
+// ===== 10. FUNGSI SIMPAN KE FIREBASE =====
+async function simpanKeFirebase(data) {
+    try {
+        await db.collection("riwayat").add(data);
+        console.log("Tersimpan ke Firebase:", data.nama);
+        return true;
+    } catch(error) {
+        console.error("Gagal ke Firebase:", error);
+        return false;
+    }
+}
 
+// ===== 11. FUNGSI SINKRONISASI OTOMATIS =====
+async function sinkronkanRiwayat() {
+    let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+    if(riwayat.length === 0) return;
+
+    const riwayatBelumSync = riwayat.filter(item =>!item.sync);
+
+    if(riwayatBelumSync.length > 0) {
+        for(let i = 0; i < riwayatBelumSync.length; i++) {
+            const berhasil = await simpanKeFirebase(riwayatBelumSync[i]);
+            if(berhasil) {
+                riwayatBelumSync[i].sync = true;
+            }
+        }
+        localStorage.setItem("riwayat", JSON.stringify(riwayat));
+        alert(`${riwayatBelumSync.length} data berhasil disinkronkan`);
+    }
+}
+
+// Auto sync saat online
+window.addEventListener('online', () => {
+    sinkronkanRiwayat();
+});
 }); // penutup DOMContentLoaded
